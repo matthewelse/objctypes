@@ -1,6 +1,6 @@
 (library
  (name objctypes_test)
- (libraries core core_unix objctypes)
+ (libraries core core_unix objctypes objctypes_foundation)
  (inline_tests)
  (preprocess
   (pps ppx_jane)))

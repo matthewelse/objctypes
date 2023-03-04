@@ -1,0 +1,7 @@
+(library
+ (name objctypes_foundation)
+ (libraries core objctypes)
+ (preprocess
+  (pps ppx_jane))
+ ;;
+ )
