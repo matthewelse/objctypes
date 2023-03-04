@@ -2,7 +2,7 @@ module Class = struct
   type t
 end
 
-module Sel = struct
+module Selector = struct
   type t
 end
 

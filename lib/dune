@@ -1,6 +1,7 @@
 (library
  (name objctypes)
  ; ctypes backward compatibility shims warn sometimes; suppress them
+ (libraries core objctypes_bindings ctypes ctypes.foreign)
  (flags
   (:standard -w -9-27))
  (preprocess

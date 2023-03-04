@@ -14,19 +14,21 @@ module Functions (F : FOREIGN) = struct
     foreign
       "class_getInstanceMethod"
       (ptr Types.objc_class
-      @-> ptr Types.objc_sel
+      @-> ptr Types.objc_selector
       @-> returning (ptr_opt Types.objc_method))
   ;;
 
   let class_getName = foreign "class_getName" (ptr Types.objc_class @-> returning string)
 
   let method_getName =
-    foreign "method_getName" (ptr Types.objc_method @-> returning (ptr_opt Types.objc_sel))
+    foreign
+      "method_getName"
+      (ptr Types.objc_method @-> returning (ptr_opt Types.objc_selector))
   ;;
 
   let sel_registerName =
-    foreign "sel_registerName" (string @-> returning (ptr Types.objc_sel))
+    foreign "sel_registerName" (string @-> returning (ptr Types.objc_selector))
   ;;
 
-  let sel_getName = foreign "sel_getName" (ptr Types.objc_sel @-> returning string)
+  let sel_getName = foreign "sel_getName" (ptr Types.objc_selector @-> returning string)
 end
