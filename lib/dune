@@ -1,2 +1,26 @@
 (library
- (name objctypes))
+ (name objctypes)
+ ; ctypes backward compatibility shims warn sometimes; suppress them
+ (flags
+  (:standard -w -9-27))
+ (libraries core ctypes.foreign)
+ (preprocess
+  (pps ppx_jane))
+ (ctypes
+  (external_library_name libobjc)
+  (build_flags_resolver
+   (vendored
+    (c_library_flags :standard -lobjc -framework Foundation)))
+  (headers
+   (preamble "%{read:preamble.h}"))
+  (type_description
+   (instance Type)
+   (functor Type_description))
+  (function_description
+   (concurrency unlocked)
+   (instance Function)
+   (functor Function_description))
+  (generated_types Types_generated)
+  (generated_entry_point C))
+ ;;
+ )
