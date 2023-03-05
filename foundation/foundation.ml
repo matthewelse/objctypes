@@ -50,16 +50,18 @@ class nsobject (init_ptr : Object.t option) =
       let hash = Objctypes.Selector.register_selector "hash" in
       let hash_typ = Ctypes.(returning uint64_t) in
       Object.msg_send ptr hash hash_typ |> Unsigned.UInt64.to_int64
+
+    method raw_ptr = ptr
   end
 
 and nsstring init_ptr =
   let init_ptr : Object.t =
     Option.value_or_thunk init_ptr ~default:(fun () ->
-        let clazz = Class.lookup_exn "NSObject" in
+        let clazz = Class.lookup_exn "NSString" in
         let ptr =
           Objctypes.Class.msg_send
             clazz
-            (Objctypes.Selector.register_selector "new")
+            (Objctypes.Selector.register_selector "alloc")
             Ctypes.(returning (ptr Object.typ))
         in
         ptr)
@@ -73,6 +75,19 @@ and nsstring init_ptr =
         cStringUsingEncoding
         cStringUsingEncoding_typ
         (Unsigned.UInt.of_int (Encoding.to_int encoding))
+
+    method init_from_string s =
+      let bytes = String.length s in
+      let ptr =
+        Object.msg_send
+          ptr
+          (Selector.register_selector "initWithBytes:length:encoding:")
+          Ctypes.(string @-> int @-> int @-> returning (ptr Object.typ))
+          s
+          bytes
+          (Encoding.to_int Ascii)
+      in
+      new nsstring (Some ptr)
   end
 
 class nsthread init_ptr =
@@ -129,6 +144,11 @@ class nsarray init_ptr =
     inherit nsobject (Some init_ptr)
   end
 
-let sexp_of_nsarray ns_array =
-  Sexp.Atom (ns_array#description#to_string Encoding.Utf8 |> Option.value_exn)
+let sexp_of_nsobject ns_object =
+  Sexp.Atom (ns_object#description#to_string Encoding.Utf8 |> Option.value_exn)
+;;
+
+let nsstring_of_string s =
+  let obj = new nsstring None in
+  obj#init_from_string s
 ;;

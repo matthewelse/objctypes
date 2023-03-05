@@ -12,8 +12,10 @@ end
 class nsobject :
   Object.t option
   -> object
+       val ptr : Object.t
        method description : nsstring
        method hash : Int64.t
+       method raw_ptr : Object.t
      end
 
 and nsstring :
@@ -21,6 +23,7 @@ and nsstring :
   -> object
        inherit nsobject
        method to_string : Encoding.t -> string option
+       method init_from_string : string -> nsstring
      end
 
 class nsthread :
@@ -42,4 +45,5 @@ class nsarray :
        inherit nsobject
      end
 
-val sexp_of_nsarray : nsarray -> Sexp.t
+val sexp_of_nsobject : nsobject -> Sexp.t
+val nsstring_of_string : string -> nsstring

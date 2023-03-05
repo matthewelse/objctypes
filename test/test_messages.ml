@@ -3,7 +3,12 @@ open! Import
 
 let%expect_test "foundation: description" =
   let obj = new Objctypes_foundation.Foundation.nsarray None in
-  print_s [%message (obj : Objctypes_foundation.Foundation.nsarray)];
+  print_s
+    [%message
+      ""
+        ~obj:
+          ((obj :> Objctypes_foundation.Foundation.nsobject)
+            : Objctypes_foundation.Foundation.nsobject)];
   [%expect {|
     (obj  "(\
          \n)") |}];

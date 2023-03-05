@@ -30,6 +30,35 @@ let msg_send t selector selector_typ =
 
 let with_superclass super name = Bindings.Functions.objc_allocateClassPair super name 0
 
-let add_method t sel ~f ~type_ =
-  Bindings.Functions.class_addMethod t sel (Bindings.Types.New_method.of_fun f) type_
+let void_class_method =
+  ptr Bindings.Types.Object.typ @-> ptr Selector.typ @-> returning void
+;;
+
+let bool_class_method =
+  ptr Bindings.Types.Object.typ @-> ptr Selector.typ @-> returning bool
+;;
+
+module New_method_void = (val Foreign.dynamic_funptr void_class_method)
+module New_method_bool = (val Foreign.dynamic_funptr bool_class_method)
+
+let add_void_method t sel ~f ~type_ =
+  let add_method =
+    coerce
+      (ptr void)
+      (Foreign.funptr
+         (ptr typ @-> ptr Selector.typ @-> New_method_void.t @-> string @-> returning bool))
+      Bindings.Functions.class_addMethod
+  in
+  add_method t sel (New_method_void.of_fun f) type_
+;;
+
+let add_bool_method t sel ~f ~type_ =
+  let add_method =
+    coerce
+      (ptr void)
+      (Foreign.funptr
+         (ptr typ @-> ptr Selector.typ @-> New_method_bool.t @-> string @-> returning bool))
+      Bindings.Functions.class_addMethod
+  in
+  add_method t sel (New_method_bool.of_fun f) type_
 ;;

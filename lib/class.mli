@@ -23,9 +23,16 @@ val with_superclass : t -> string -> t option
 
 type object_ := Bindings.Types.Object.t Ctypes.structure Ctypes_static.ptr
 
-val add_method
+val add_void_method
   :  t
   -> Selector.t
   -> f:(object_ -> Selector.t -> unit)
+  -> type_:string
+  -> bool
+
+val add_bool_method
+  :  t
+  -> Selector.t
+  -> f:(object_ -> Selector.t -> bool)
   -> type_:string
   -> bool

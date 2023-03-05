@@ -1,12 +1,6 @@
 open Ctypes
 module Types = Types_generated
 
-let class_method =
-  ptr Types_generated.objc_object @-> ptr Types_generated.objc_selector @-> returning void
-;;
-
-module New_method = (val Foreign.dynamic_funptr class_method)
-
 module Functions (F : FOREIGN) = struct
   open F
 
@@ -30,16 +24,7 @@ module Functions (F : FOREIGN) = struct
       @-> returning (ptr_opt Types.objc_method))
   ;;
 
-  let class_addMethod =
-    foreign
-      "class_addMethod"
-      (ptr Types.objc_class
-      @-> ptr Types.objc_selector
-      @-> New_method.t
-      @-> string
-      @-> returning bool)
-  ;;
-
+  let class_addMethod = foreign_value "class_addMethod" void
   let class_getName = foreign "class_getName" (ptr Types.objc_class @-> returning string)
 
   let method_getName =
