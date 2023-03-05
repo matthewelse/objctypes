@@ -130,7 +130,6 @@ let register_app_delegate
       clazz
       (Selector.register_selector "applicationDidFinishLaunching:")
       ~f:(fun _ _ -> AppDelegate.did_finish_launching delegate)
-      ~type_:"@:v"
   in
   assert did_register_method;
   let did_register_method =
@@ -138,7 +137,6 @@ let register_app_delegate
       clazz
       (Selector.register_selector "applicationWillTerminate:")
       ~f:(fun _ _ -> AppDelegate.will_terminate delegate)
-      ~type_:"@:v"
   in
   assert did_register_method;
   let did_register_method =
@@ -146,7 +144,6 @@ let register_app_delegate
       clazz
       (Selector.register_selector "shouldTerminateAfterLastWindowClosed:")
       ~f:(fun _ _ -> AppDelegate.should_terminate_after_last_window_closed delegate)
-      ~type_:"@:B"
   in
   assert did_register_method;
   Object.msg_send
@@ -168,11 +165,11 @@ module App = struct
 
   let did_finish_launching { window } =
     (* FIXME: this is all broken. *)
-    Object.msg_send
+    (* Object.msg_send
       (shared_application ())
       (Selector.register_selector "setActivationPolicy:")
       Ctypes.(int @-> returning void)
-      0;
+      0; *)
     (*
     let app =
       Class.msg_send

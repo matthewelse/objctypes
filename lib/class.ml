@@ -41,24 +41,19 @@ let bool_class_method =
 module New_method_void = (val Foreign.dynamic_funptr void_class_method)
 module New_method_bool = (val Foreign.dynamic_funptr bool_class_method)
 
-let add_void_method t sel ~f ~type_ =
-  let add_method =
-    coerce
-      (ptr void)
-      (Foreign.funptr
-         (ptr typ @-> ptr Selector.typ @-> New_method_void.t @-> string @-> returning bool))
-      Bindings.Functions.class_addMethod
+let add_method (type a) t sel (method_typ : a fn) ~f ~type_ =
+  let method_typ_with_obj_and_sel : (_ -> _ -> a) fn =
+    ptr Bindings.Types.Object.typ @-> ptr Selector.typ @-> method_typ
   in
-  add_method t sel (New_method_void.of_fun f) type_
+  let module Funptr = (val Foreign.dynamic_funptr method_typ_with_obj_and_sel) in
+  let add_method_typ =
+    ptr typ @-> ptr Selector.typ @-> Funptr.t @-> string @-> returning bool
+  in
+  let add_method =
+    coerce (ptr void) (Foreign.funptr add_method_typ) Bindings.Functions.class_addMethod
+  in
+  add_method t sel (Funptr.of_fun f) type_
 ;;
 
-let add_bool_method t sel ~f ~type_ =
-  let add_method =
-    coerce
-      (ptr void)
-      (Foreign.funptr
-         (ptr typ @-> ptr Selector.typ @-> New_method_bool.t @-> string @-> returning bool))
-      Bindings.Functions.class_addMethod
-  in
-  add_method t sel (New_method_bool.of_fun f) type_
-;;
+let add_void_method t sel ~f = add_method t sel (returning void) ~f ~type_:"@:v"
+let add_bool_method t sel ~f = add_method t sel (returning bool) ~f ~type_:"@:B"
