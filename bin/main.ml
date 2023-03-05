@@ -3,8 +3,13 @@ open! Objctypes
 open! Objctypes_foundation
 open! Objctypes_appkit
 
-module App = struct
-  type t = { window : Window.t }
+module App_inner = struct
+  module T = struct
+    type t = { window : Window.t }
+  end
+
+  include T
+  include App_delegate.Default (T)
 
   let did_finish_launching { window } =
     (* FIXME: this is all broken. *)
@@ -25,24 +30,13 @@ module App = struct
       (Selector.register_selector "activateWithOptions:")
       Ctypes.(int @-> returning void)
       (1 lsl 1); *)
-    print_s [%message "did_finish_launching" ~(window : Window.t)];
     Window.set_minimum_content_size window ~width:300. ~height:300.;
     Window.set_title window "hello from ocaml!";
     Window.show window
   ;;
-
-  let will_terminate { window = _ } = print_endline [%string "will terminate:"]
-
-  let should_terminate_after_last_window_closed _ =
-    print_endline "should terminate after last window closed";
-    true
-  ;;
-
-  let should_terminate _ =
-    print_endline "should terminate";
-    App_delegate.Terminate_behaviour.Now
-  ;;
 end
+
+module App = App_delegate.Debug (App_inner)
 
 let () =
   let app = Application.create (module App) { window = Window.create () } in
