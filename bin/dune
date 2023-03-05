@@ -1,5 +1,5 @@
 (executable
  (name main)
- (libraries objctypes objctypes_foundation)
+ (libraries objctypes objctypes_foundation objctypes_appkit)
  (preprocess
   (pps ppx_jane)))

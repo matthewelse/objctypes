@@ -126,6 +126,9 @@ class nsautoreleasepool init_ptr =
   in
   object
     inherit nsobject (Some init_ptr)
+
+    method drain =
+      Object.msg_send ptr (Selector.register_selector "drain") Ctypes.(returning void)
   end
 
 class nsarray init_ptr =
@@ -147,6 +150,8 @@ class nsarray init_ptr =
 let sexp_of_nsobject ns_object =
   Sexp.Atom (ns_object#description#to_string Encoding.Utf8 |> Option.value_exn)
 ;;
+
+let sexp_of_nsautoreleasepool = sexp_of_nsobject
 
 let nsstring_of_string s =
   let obj = new nsstring None in

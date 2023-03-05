@@ -37,6 +37,7 @@ class nsautoreleasepool :
   Object.t option
   -> object
        inherit nsobject
+       method drain : unit
      end
 
 class nsarray :
@@ -46,4 +47,5 @@ class nsarray :
      end
 
 val sexp_of_nsobject : nsobject -> Sexp.t
+val sexp_of_nsautoreleasepool : nsautoreleasepool -> Sexp.t
 val nsstring_of_string : string -> nsstring
