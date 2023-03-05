@@ -19,3 +19,13 @@ val lookup_exn : string -> t
 val msg_send : t -> Selector.t -> 'a fn -> 'a
 
 val name : t -> string
+val with_superclass : t -> string -> t option
+
+type object_ := Bindings.Types.Object.t Ctypes.structure Ctypes_static.ptr
+
+val add_method
+  :  t
+  -> Selector.t
+  -> f:(object_ -> Selector.t -> unit)
+  -> type_:string
+  -> bool

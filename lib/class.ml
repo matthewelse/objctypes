@@ -27,3 +27,9 @@ let msg_send t selector selector_typ =
   in
   f t selector
 ;;
+
+let with_superclass super name = Bindings.Functions.objc_allocateClassPair super name 0
+
+let add_method t sel ~f ~type_ =
+  Bindings.Functions.class_addMethod t sel (Bindings.Types.New_method.of_fun f) type_
+;;

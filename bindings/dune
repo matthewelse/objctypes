@@ -1,6 +1,7 @@
 (library
  (name objctypes_bindings)
  ; ctypes backward compatibility shims warn sometimes; suppress them
+ (libraries ctypes ctypes.foreign)
  (flags
   (:standard -w -9-27))
  (preprocess
@@ -9,7 +10,13 @@
   (external_library_name libobjc)
   (build_flags_resolver
    (vendored
-    (c_library_flags :standard -lobjc -framework Foundation)))
+    (c_library_flags
+     :standard
+     -lobjc
+     -framework
+     Foundation
+     -framework
+     AppKit)))
   (headers
    (preamble "%{read:preamble.h}"))
   (type_description

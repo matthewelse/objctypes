@@ -1,3 +1,3 @@
 (executable
  (name main)
- (libraries objctypes))
+ (libraries objctypes objctypes_foundation))

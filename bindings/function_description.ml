@@ -1,6 +1,12 @@
 open Ctypes
 module Types = Types_generated
 
+let class_method =
+  ptr Types_generated.objc_object @-> ptr Types_generated.objc_selector @-> returning void
+;;
+
+module New_method = (val Foreign.dynamic_funptr class_method)
+
 module Functions (F : FOREIGN) = struct
   open F
 
@@ -10,12 +16,28 @@ module Functions (F : FOREIGN) = struct
 
   let objc_msgSend = foreign_value "objc_msgSend" void
 
+  let objc_allocateClassPair =
+    foreign
+      "objc_allocateClassPair"
+      (ptr Types.objc_class @-> string @-> int @-> returning (ptr_opt Types.objc_class))
+  ;;
+
   let class_getInstanceMethod =
     foreign
       "class_getInstanceMethod"
       (ptr Types.objc_class
       @-> ptr Types.objc_selector
       @-> returning (ptr_opt Types.objc_method))
+  ;;
+
+  let class_addMethod =
+    foreign
+      "class_addMethod"
+      (ptr Types.objc_class
+      @-> ptr Types.objc_selector
+      @-> New_method.t
+      @-> string
+      @-> returning bool)
   ;;
 
   let class_getName = foreign "class_getName" (ptr Types.objc_class @-> returning string)

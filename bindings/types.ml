@@ -15,3 +15,5 @@ module Object = struct
 
   let typ = C.Type.objc_object
 end
+
+module New_method = Function_description.New_method
